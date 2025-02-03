@@ -3,25 +3,21 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-
 public class Player : MonoBehaviour
 {
     public float velocidade = 10f;
     public float focaPulo = 10f;
 
     public bool noChao = false;
-  
 
     private Rigidbody2D _rigidbody2D;
-    private SpriteRenderer  spriteRenderer; 
+    private SpriteRenderer spriteRenderer;
 
-    // Start is called before the first frame update
     void Start()
     {
         _rigidbody2D = gameObject.GetComponent<Rigidbody2D>();
         spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
     }
-
 
     void OnCollisionStay2D(Collision2D collision)
     {
@@ -39,39 +35,38 @@ public class Player : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
     void Update()
     {
-        if(Input.GetKey(KeyCode.LeftArrow))
+        float movimento = 0f;
+
+        if (Input.GetKey(KeyCode.LeftArrow))
         {
-            gameObject.transform.position += new Vector3(-velocidade*Time.deltaTime,0,0);
-            //rigidbody2D.AddForce(new Vector2(-velocidade,0));
+            movimento = -velocidade;
             spriteRenderer.flipX = true;
             Debug.Log("LeftArrow");
         }
-        
 
-        if(Input.GetKey(KeyCode.RightArrow))
+        if (Input.GetKey(KeyCode.RightArrow))
         {
-            gameObject.transform.position += new Vector3(velocidade*Time.deltaTime,0,0);
-            //rigidbody2D.AddForce(new Vector2(velocidade,0));
+            movimento = velocidade;
             spriteRenderer.flipX = false;
             Debug.Log("RightArrow");
         }
 
-        if (Input.GetKeyDown(KeyCode.Space) && noChao == true)
-        {
-            _rigidbody2D.AddForce(new Vector2(0, 1) * focaPulo,ForceMode2D.Impulse);
+        // Aplica movimento horizontal através da velocidade do Rigidbody2D
+        _rigidbody2D.velocity = new Vector2(movimento, _rigidbody2D.velocity.y);
 
+        // Pulo
+        if (Input.GetKeyDown(KeyCode.Space) && noChao)
+        {
+            _rigidbody2D.velocity = new Vector2(_rigidbody2D.velocity.x, focaPulo);
             Debug.Log("Jump");
         }
+
+        // Reinicia a cena se o jogador cair
         if (transform.position.y < -5)
         {
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-            
         }
-     
-
-
     }
 }
