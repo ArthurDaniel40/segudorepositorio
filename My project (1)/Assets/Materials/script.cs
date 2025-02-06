@@ -33,6 +33,10 @@ public class Player : MonoBehaviour
         {
             noChao = false;
         }
+         if (collision.gameObject.tag == "lava")
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        }
     }
 
     void Update()
@@ -52,8 +56,7 @@ public class Player : MonoBehaviour
             spriteRenderer.flipX = false;
             Debug.Log("RightArrow");
         }
-
-        // Aplica movimento horizontal através da velocidade do Rigidbody2D
+        
         _rigidbody2D.velocity = new Vector2(movimento, _rigidbody2D.velocity.y);
 
         // Pulo
@@ -64,9 +67,7 @@ public class Player : MonoBehaviour
         }
 
         // Reinicia a cena se o jogador cair
-        if (transform.position.y < -5)
-        {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-        }
+       
+       
     }
 }
