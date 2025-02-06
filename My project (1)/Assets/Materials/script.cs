@@ -53,7 +53,7 @@ public class Player : MonoBehaviour
             Debug.Log("RightArrow");
         }
 
-        // Aplica movimento horizontal através da velocidade do Rigidbody2D
+        // Aplica movimento horizontal atravÃ©s da velocidade do Rigidbody2D
         _rigidbody2D.velocity = new Vector2(movimento, _rigidbody2D.velocity.y);
 
         // Pulo
