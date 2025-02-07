@@ -227,7 +227,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: -1
-  m_Sprite: {fileID: 21300000, guid: a5e35249505b0b44cb78e92420eac7e8, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 39432393bf8b5b74da511067993b6233, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -21278,8 +21278,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   velocidade: 6
+  dashForca: 100
   focaPulo: 6
   noChao: 0
+  podeDash: 1
 --- !u!1 &710790732
 GameObject:
   m_ObjectHideFlags: 0

@@ -5,24 +5,26 @@ using UnityEngine.SceneManagement;
 public class Player : MonoBehaviour
 {
     public float velocidade = 10f;
+    public float dashForca = 30f; // Agora é força aplicada ao Dash
     public float focaPulo = 10f;
     public bool noChao = false;
-
+    public bool podeDash = true;
+    
     private Rigidbody2D _rigidbody2D;
     private SpriteRenderer spriteRenderer;
 
     void Start()
     {
-        _rigidbody2D = gameObject.GetComponent<Rigidbody2D>();
-        spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
+        _rigidbody2D = GetComponent<Rigidbody2D>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
-    // Detect when player enters ground collision
     void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("chao"))
         {
             noChao = true;
+            podeDash = true; // Permite Dash ao tocar no chão novamente
         }
 
         if (collision.gameObject.CompareTag("lava"))
@@ -31,7 +33,6 @@ public class Player : MonoBehaviour
         }
     }
 
-    // Detect when player exits ground collision
     void OnCollisionExit2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("chao"))
@@ -42,24 +43,29 @@ public class Player : MonoBehaviour
 
     void Update()
     {
-        float movimento = 0f;
+        float movimento = Input.GetAxisRaw("Horizontal");
 
-        // Movement
-        if (Input.GetKey(KeyCode.LeftArrow))
+        // Define a direção do sprite
+        if (movimento < 0)
         {
-            movimento = -velocidade;
             spriteRenderer.flipX = true;
         }
-
-        if (Input.GetKey(KeyCode.RightArrow))
+        else if (movimento > 0)
         {
-            movimento = velocidade;
             spriteRenderer.flipX = false;
         }
 
-        _rigidbody2D.velocity = new Vector2(movimento, _rigidbody2D.velocity.y);
+        // Aplica movimento normal
+        _rigidbody2D.velocity = new Vector2(movimento * velocidade, _rigidbody2D.velocity.y);
 
-        // Jumping
+        // Dash (uma única vez no ar)
+        if (Input.GetKeyDown(KeyCode.RightShift) && podeDash && movimento != 0)
+        {
+            _rigidbody2D.AddForce(new Vector2(movimento * dashForca, 0), ForceMode2D.Impulse);
+            podeDash = false;
+        }
+
+        // Pulo
         if (Input.GetKeyDown(KeyCode.Space) && noChao)
         {
             _rigidbody2D.velocity = new Vector2(_rigidbody2D.velocity.x, focaPulo);
