@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -7,7 +6,6 @@ public class Player : MonoBehaviour
 {
     public float velocidade = 10f;
     public float focaPulo = 10f;
-
     public bool noChao = false;
 
     private Rigidbody2D _rigidbody2D;
@@ -19,23 +17,26 @@ public class Player : MonoBehaviour
         spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
     }
 
-    void OnCollisionStay2D(Collision2D collision)
+    // Detect when player enters ground collision
+    void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.tag == "chao")
+        if (collision.gameObject.CompareTag("chao"))
         {
             noChao = true;
         }
-    }
 
-    void OnCollisionExit2D(Collision2D collision)
-    {
-        if (collision.gameObject.tag == "chao")
-        {
-            noChao = false;
-        }
-         if (collision.gameObject.tag == "lava")
+        if (collision.gameObject.CompareTag("lava"))
         {
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        }
+    }
+
+    // Detect when player exits ground collision
+    void OnCollisionExit2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("chao"))
+        {
+            noChao = false;
         }
     }
 
@@ -43,31 +44,25 @@ public class Player : MonoBehaviour
     {
         float movimento = 0f;
 
+        // Movement
         if (Input.GetKey(KeyCode.LeftArrow))
         {
             movimento = -velocidade;
             spriteRenderer.flipX = true;
-            Debug.Log("LeftArrow");
         }
 
         if (Input.GetKey(KeyCode.RightArrow))
         {
             movimento = velocidade;
             spriteRenderer.flipX = false;
-            Debug.Log("RightArrow");
         }
-        
+
         _rigidbody2D.velocity = new Vector2(movimento, _rigidbody2D.velocity.y);
 
-        // Pulo
+        // Jumping
         if (Input.GetKeyDown(KeyCode.Space) && noChao)
         {
             _rigidbody2D.velocity = new Vector2(_rigidbody2D.velocity.x, focaPulo);
-            Debug.Log("Jump");
         }
-
-        // Reinicia a cena se o jogador cair
-       
-       
     }
 }
