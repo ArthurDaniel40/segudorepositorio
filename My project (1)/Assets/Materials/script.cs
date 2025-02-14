@@ -1,7 +1,6 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.Animations;
 
 public class Player : MonoBehaviour
 {
@@ -10,18 +9,14 @@ public class Player : MonoBehaviour
     public float focaPulo = 10f;
     public bool noChao = false;
     public bool podeDash = true;
-    public bool corerendo = false; 
+    
     private Rigidbody2D _rigidbody2D;
     private SpriteRenderer spriteRenderer;
-
-
-    private Animator _animator;
 
     void Start()
     {
         _rigidbody2D = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
-        _animator = GetComponent<Animator>();
     }
 
     void OnCollisionEnter2D(Collision2D collision)
@@ -54,18 +49,11 @@ public class Player : MonoBehaviour
         if (movimento < 0)
         {
             spriteRenderer.flipX = true;
-            corerendo = true;
         }
         else if (movimento > 0)
         {
             spriteRenderer.flipX = false;
-            corerendo = true;
         }
-        else
-        {
-            corerendo = false;
-        }
-        _animator.SetBool ("correndo", corerendo);
 
         // Aplica movimento normal
         _rigidbody2D.velocity = new Vector2(movimento * velocidade, _rigidbody2D.velocity.y);
