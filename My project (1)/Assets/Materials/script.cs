@@ -1,74 +1,73 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviour
 {
     public float velocidade = 10f;
-    public float dashForca = 30f; // Agora é força aplicada ao Dash
     public float focaPulo = 10f;
+
     public bool noChao = false;
-    public bool podeDash = true;
-    
+
     private Rigidbody2D _rigidbody2D;
     private SpriteRenderer spriteRenderer;
 
     void Start()
     {
-        _rigidbody2D = GetComponent<Rigidbody2D>();
-        spriteRenderer = GetComponent<SpriteRenderer>();
+        _rigidbody2D = gameObject.GetComponent<Rigidbody2D>();
+        spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
     }
 
-    void OnCollisionEnter2D(Collision2D collision)
+    void OnCollisionStay2D(Collision2D collision)
     {
-        if (collision.gameObject.CompareTag("chao"))
+        if (collision.gameObject.tag == "chao")
         {
             noChao = true;
-            podeDash = true; // Permite Dash ao tocar no chão novamente
-        }
-
-        if (collision.gameObject.CompareTag("lava"))
-        {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
     }
 
     void OnCollisionExit2D(Collision2D collision)
     {
-        if (collision.gameObject.CompareTag("chao"))
+        if (collision.gameObject.tag == "chao")
         {
             noChao = false;
+        }
+         if (collision.gameObject.tag == "lava")
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
     }
 
     void Update()
     {
-        float movimento = Input.GetAxisRaw("Horizontal");
+        float movimento = 0f;
 
-        // Define a direção do sprite
-        if (movimento < 0)
+        if (Input.GetKey(KeyCode.LeftArrow))
         {
+            movimento = -velocidade;
             spriteRenderer.flipX = true;
+            Debug.Log("LeftArrow");
         }
-        else if (movimento > 0)
+
+        if (Input.GetKey(KeyCode.RightArrow))
         {
+            movimento = velocidade;
             spriteRenderer.flipX = false;
+            Debug.Log("RightArrow");
         }
-
-        // Aplica movimento normal
-        _rigidbody2D.velocity = new Vector2(movimento * velocidade, _rigidbody2D.velocity.y);
-
-        // Dash (uma única vez no ar)
-        if (Input.GetKeyDown(KeyCode.RightShift) && podeDash && movimento != 0)
-        {
-            _rigidbody2D.AddForce(new Vector2(movimento * dashForca, 0), ForceMode2D.Impulse);
-            podeDash = false;
-        }
+        
+        _rigidbody2D.velocity = new Vector2(movimento, _rigidbody2D.velocity.y);
 
         // Pulo
         if (Input.GetKeyDown(KeyCode.Space) && noChao)
         {
             _rigidbody2D.velocity = new Vector2(_rigidbody2D.velocity.x, focaPulo);
+            Debug.Log("Jump");
         }
+
+        // Reinicia a cena se o jogador cair
+       
+       
     }
 }
